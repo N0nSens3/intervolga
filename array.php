@@ -1,5 +1,5 @@
 <?php
-
+require_once("blocks\\header.php");
 
 $data = [
 
@@ -19,33 +19,46 @@ $data = [
 
 ];
 
-$dict = [];
+#Ser error handler to catch PHP Warings : Undefined array key
+
+set_error_handler(function ($errno, $err_msg, $err_file, $err_line)
+{
+    throw new ErrorException($err_msg, 0, $errno, $err_file, $err_line );
+}, E_WARNING);
+ 
+$students_sheet = [];
 $courses = [' ',];
 foreach($data as $arr) {
     $name = $arr[0];
     $course = $arr[1];
-    $dict[$name][$course] += $arr[2];
+    try {
+    $students_sheet[$name][$course] += $arr[2];
+    } catch (ErrorException) {
+        $students_sheet[$name][$course] = $arr[2];
+    }
     if (!in_array($course, $courses, TRUE)) {
         array_push($courses, $course);
     }
 }
+restore_error_handler();
+
 sort($courses);
-ksort($dict);
-
-
+ksort($students_sheet);
 ?>
 
 <table>
     <?foreach($courses as $course): ?>
         <th><?=$course?></th>
     <? endforeach ?>
-    <? foreach($dict as $key=>$value) :?>
+    <? foreach($students_sheet as $key=>$value) :?>
         <tr>
         <td><?=$key ?></td>
-        <td><?= isset($value['Математика']) ? $value['Математика'] : ''?></td>
-        <td><?= isset($value['ОБЖ']) ? $value['ОБЖ'] : ''?></td>
-        <td><?= isset($value['Физика']) ? $value['Физика'] : ''?></td>
+        <td><?= isset($value[$courses[1]]) ? $value[$courses[1]] : ''?></td>
+        <td><?= isset($value[$courses[2]]) ? $value[$courses[2]] : ''?></td>
+        <td><?= isset($value[$courses[3]]) ? $value[$courses[3]] : ''?></td>
         </tr>
     <? endforeach ?> 
 </table>
 
+<?
+require_once("blocks\\footer.php");
