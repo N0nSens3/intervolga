@@ -19,7 +19,7 @@ $data = [
 
 ];
 
-#Ser error handler to catch PHP Warings : Undefined array key
+#Ser error handler to catch PHP Warnings : Undefined array key
 
 set_error_handler(function ($errno, $err_msg, $err_file, $err_line)
 {
