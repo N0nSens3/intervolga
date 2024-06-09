@@ -28,13 +28,13 @@ TXT;
 $text_without_tags = trim(strip_tags($text));
 $text_without_tags = array_diff(array_map('trim', explode(' ', $text_without_tags)), [' ', '', '-']);
 $text_without_tags = array_values($text_without_tags);
-$last_word = $text_without_tags[WORD_COUNT];
-$pos = strpos($text, $last_word);
-$text = str_split($text, $pos);
-$text = $text[0].'...';
+$last_word = $text_without_tags[WORD_COUNT]." ".$text_without_tags[WORD_COUNT + 1];
+$displayed_text = mb_substr($text, 0, mb_strpos($text, $last_word));
+$ending = '&hellip;' . mb_substr_count($displayed_text, '(') > mb_substr_count($displayed_text, ')') ? ')' : '';
+$displayed_text .= $ending;
 
 # Using DOM to close HTML tags 
 
 $dom = new DOMDocument();
-$dom->loadHTML( mb_convert_encoding($text, 'HTML-ENTITIES', 'UTF-8' ));
+$dom->loadHTML(mb_convert_encoding($displayed_text, 'HTML-ENTITIES', 'UTF-8' ));
 echo $dom->saveHTML();
